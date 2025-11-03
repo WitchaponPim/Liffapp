@@ -4,37 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
   <title>My LIFF app</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial; }
+    body {  align-items:center; justify-content:center; min-height:100vh; background:#f6f7fb; }
+    .card {
+      background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 16px rgba(20,30,60,0.08);
+      width:320px; max-width:90%;
+    }
+    h1 { font-size:16px; margin:0 0 12px 0; }
+    label { display:block; font-size:13px; margin:8px 0 6px 0; color:#333; }
+    input[type="text"], input[type="password"] {
+      width:100%; padding:10px 12px; border:1px solid #e1e4ea; border-radius:8px; font-size:14px;
+      box-sizing:border-box;
+    }
+    button {
+      width:100%; margin-top:12px; padding:10px 12px; border:0; border-radius:8px;
+      background:#2563eb; color:#fff; font-weight:600; font-size:14px; cursor:pointer;
+    }
+    pre#jsonOutput {
+      margin-top:12px; background:#0f1724; color:#e6eef8; padding:12px; border-radius:8px; font-size:13px;
+      white-space:pre-wrap; word-break:break-word; max-height:200px; overflow:auto;
+    }
+    .muted { font-size:12px; color:#6b7280; margin-top:8px; text-align:center; }
+  </style>
   <link rel="stylesheet" href="css/style.css" media="all">
 </head>
 <body>
-  <p id="os"><b>OS:</b> </p>
-  <p id="language"><b>Language:</b> </p>
-  <p id="version"><b>Version:</b> </p>
-  <p id="isInClient"><b>isInClient:</b> </p>
-  <p id="accessToken"><b>AccessToken:</b> </p>
-  <img id="pictureUrl">
-  <p id="userId"><b>userrId:</b> </p>
-  <p id="displayName"><b>displayName:</b> </p>
-  <p id="statusMessage"><b>statusMessage:</b> </p>
-  <p id="decodedIDToken"><b>email:</b> </p>
-  <p id="type"><b>type:</b> </p>
-  <p id="viewType"><b>viewType:</b> </p>
-  <p id="utouId"><b>utouId:</b> </p>
-  <p id="roomId"><b>roomId:</b> </p>
-  <p id="groupId"><b>groupId:</b> </p>
-  <p id="friendship"><b>isFriendship:</b> </p>
-  <p id="scanCode"><b>Code:</b> </p>
-  <p id="isLoggedIn"><b>isLoggedIn:</b> </p>
-  <p id="universalLink1"><b>Universal Link:</b> </p>
-  <p id="universalLink2"><b>Universal Link with Query params:</b> </p>
-  <p><a href="liff/path/?param=9">Link to Path</a></p>
+  <div>
+    <p id="os"><b>OS:</b> </p>
+    <p id="language"><b>Language:</b> </p>
+    <p id="version"><b>Version:</b> </p>
+    <p id="isInClient"><b>isInClient:</b> </p>
+    <p id="accessToken"><b>AccessToken:</b> </p>
+    <img id="pictureUrl">
+    <p id="userId"><b>userrId:</b> </p>
+    <p id="displayName"><b>displayName:</b> </p>
+    <p id="statusMessage"><b>statusMessage:</b> </p>
+    <p id="decodedIDToken"><b>email:</b> </p>
+    <p id="type"><b>type:</b> </p>
+    <p id="viewType"><b>viewType:</b> </p>
+    <p id="utouId"><b>utouId:</b> </p>
+    <p id="roomId"><b>roomId:</b> </p>
+    <p id="groupId"><b>groupId:</b> </p>
+    <p id="friendship"><b>isFriendship:</b> </p>
+    <p id="scanCode"><b>Code:</b> </p>
+    <p id="isLoggedIn"><b>isLoggedIn:</b> </p>
+    <p id="universalLink1"><b>Universal Link:</b> </p>
+    <p id="universalLink2"><b>Universal Link with Query params:</b> </p>
+    <p><a href="liff/path/?param=9">Link to Path</a></p>
+  
+    <button id="btnMsg" onclick="sendMsg()">Send Message</button>
+    <button id="btnShare" onclick="shareMsg()">Share Target Picker</button>
+    <button onclick="openWindow()">Open Window</button>
+    <button id="btnScanCode" onclick="scanCode()">Scan Code</button>
+    <button id="btnLogOut" onclick="logOut()">Log Out</button>
+    <button id="btnClose" onclick="closed()">Close</button>
+  </div>
+ 
 
-  <button id="btnMsg" onclick="sendMsg()">Send Message</button>
-  <button id="btnShare" onclick="shareMsg()">Share Target Picker</button>
-  <button onclick="openWindow()">Open Window</button>
-  <button id="btnScanCode" onclick="scanCode()">Scan Code</button>
-  <button id="btnLogOut" onclick="logOut()">Log Out</button>
-  <button id="btnClose" onclick="closed()">Close</button>
+  <div class="card" role="region" aria-label="login form">
+    <h1>เข้าสู่ระบบ (ทดสอบ)</h1>
+    <form id="loginForm" autocomplete="off">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="muted">เมื่อกดปุ่ม จะสร้าง JSON และแสดงด้านล่าง</div>
+    <pre id="jsonOutput" aria-live="polite" hidden></pre>
+  </div>
+
 
   <!-- <script src="js/vconsole.min.js"></script> -->
   <!-- <script>
@@ -44,6 +87,32 @@
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
+    const form = document.getElementById('loginForm');
+    const output = document.getElementById('jsonOutput');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); // หยุดไม่ให้รีเฟรชหน้า
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const line_userId = document.getElementById('userId').value;
+
+      const payload = {
+        user: username,
+        password: password
+      };
+
+      // แสดง JSON เป็นข้อความสวยงามบนหน้า
+      output.textContent = JSON.stringify(payload, null, 2);
+      output.hidden = false;
+
+      // ถ้าต้องการล้างรหัสผ่านหลังแสดง ให้ใช้บรรทัดนี้ (คอมเมนต์ออกถ้าไม่ต้องการ)
+      // document.getElementById('password').value = '';
+      
+      // ยังสามารถส่ง payload นี้ไปที่ API ได้ด้วย fetch() ถ้าต้องการ:
+      // fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+      //   .then(r => r.json()).then(console.log).catch(console.error);
+    });
+
     function createUniversalLink() {
     }
 
