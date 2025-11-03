@@ -23,7 +23,7 @@
     }
     pre#jsonOutput {
       margin-top:12px; background:#0f1724; color:#e6eef8; padding:12px; border-radius:8px; font-size:13px;
-      white-space:pre-wrap; word-break:break-word; max-height:200px; overflow:auto;
+      white-space:pre-wrap; word-break:break-word; max-height:500px; overflow:auto;
     }
     .muted { font-size:12px; color:#6b7280; margin-top:8px; text-align:center; }
   </style>
@@ -94,8 +94,10 @@
       e.preventDefault(); // หยุดไม่ให้รีเฟรชหน้า
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
+
       const line_userId = document.getElementById('userId').value;
 
+      console.log("user",line_userId)
       const payload = {
         user: username,
         password: password,
