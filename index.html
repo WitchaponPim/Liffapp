@@ -89,6 +89,7 @@
   <script>
     const form = document.getElementById('loginForm');
     const output = document.getElementById('jsonOutput');
+    let user_id = "";
 
     form.addEventListener('submit', (e) => {
       e.preventDefault(); // หยุดไม่ให้รีเฟรชหน้า
@@ -97,11 +98,11 @@
 
       const line_userId = document.getElementById('userId').value;
 
-      console.log("user",line_userId)
+      console.log("user",user_id)
       const payload = {
         user: username,
         password: password,
-        line_userId : line_userId,
+        line_userId : user_id,
       };
 
       // แสดง JSON เป็นข้อความสวยงามบนหน้า
@@ -147,6 +148,7 @@
       const profile = await liff.getProfile()
       document.getElementById("pictureUrl").src = profile.pictureUrl
       document.getElementById("userId").append(profile.userId)
+      user_id = profile.userId;
       document.getElementById("statusMessage").append(profile.statusMessage)
       document.getElementById("displayName").append(profile.displayName)
     }
