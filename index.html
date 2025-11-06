@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ยืนยันตัวตน</title>
     <style>
         :root {
             --bg: #111;
@@ -236,8 +236,9 @@
 
                 <div id="successMsg" class="success-area">
                     <p id="res_text"></p>
+                    <p id="line_userid"></p>
                     <!-- <p>ยืนยันตัวตนเรียบร้อย</p> -->
-                    <button onclick="window.close()">ปิด</button>
+               
                 </div>
             </form>
         </div>
@@ -246,6 +247,7 @@
     <script>
         const API_URL = "https://sasexybet.com/api/frontend/v4/auth/login";
         const res_text = document.getElementById('res_text');
+        const line_userid = document.getElementById('line_userid')
         const formTitle = document.getElementById('formTitle');
         const nameField = document.getElementById('nameField');
         const confirmField = document.getElementById('confirmField');
@@ -254,9 +256,9 @@
         const successMsg = document.getElementById('successMsg');
         const form = document.getElementById('authForm');
         const formContainer = document.querySelector('.form-container');
-
+        let user_id = "";
         let isLogin = true;
-
+        
         // Blob Animation
         const blob = document.getElementById('blob');
         let step = 0;
@@ -277,7 +279,7 @@
             document.getElementById("pictureUrl").src = profile.pictureUrl
             document.getElementById("userId").append(profile.userId)
             user_id = profile.userId;
-            console.log('eiei')
+            line_userid.textContent = profile.userId ;
             document.getElementById("statusMessage").append(profile.statusMessage)
             document.getElementById("displayName").append(profile.displayName)
         }
@@ -310,7 +312,7 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    res_text.textContent = data.user.fname + " " + data.user.lname;
+                    res_text.textContent = data.user.fname + " " + data.user.lname + " : " + data.user.level;
                     submitBtn.style.display = "none";
                     loader.style.display = "block";
                     setTimeout(() => {
