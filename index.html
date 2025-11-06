@@ -274,26 +274,8 @@
         blob.setAttribute('d', blobPaths[0]);
         animateBlob();
 
-        async function getUserProfile() {
-            const profile = await liff.getProfile()
-            document.getElementById("pictureUrl").src = profile.pictureUrl
-            document.getElementById("userId").append(profile.userId)
-            user_id = profile.userId;
-            line_userid.textContent = profile.userId ;
-            document.getElementById("statusMessage").append(profile.statusMessage)
-            document.getElementById("displayName").append(profile.displayName)
-        }
-        async function main() {
-            await liff.init({ liffId: "2008393372-0rqmNovj" })
-            // getEnvironment()
-            getUserProfile()
-            // getContext()
-            // getFriendship()
-            // createUniversalLink()
-        }
-        main()
-        // Form Submit
-        form.addEventListener('submit', (e) => {
+         // Form Submit
+         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const bodyData = {
@@ -322,6 +304,7 @@
                         });
                         document.querySelector('.submit-area').style.display = "none";
                         successMsg.style.display = "flex";
+                        line_userid.textContent = user_id ;
                         formTitle.textContent = "ยืนยันตัวตนสำเร็จ";
                     }, 1000);
                 })
@@ -334,6 +317,24 @@
 
         });
 
+        async function getUserProfile() {
+            const profile = await liff.getProfile()
+            document.getElementById("pictureUrl").src = profile.pictureUrl
+            document.getElementById("userId").append(profile.userId)
+            user_id = profile.userId;
+         
+            document.getElementById("statusMessage").append(profile.statusMessage)
+            document.getElementById("displayName").append(profile.displayName)
+        }
+        async function main() {
+            await liff.init({ liffId: "2008393372-0rqmNovj" })
+            // getEnvironment()
+            getUserProfile()
+            // getContext()
+            // getFriendship()
+            // createUniversalLink()
+        }
+        main()
     </script>
 </body>
 
