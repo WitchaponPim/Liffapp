@@ -309,6 +309,8 @@
                 .catch(err => {
                     console.log(err)
                     alert("ไม่พบข้อมูล")
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
                 });
 
 
