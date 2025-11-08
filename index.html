@@ -215,12 +215,7 @@
         <div class="form-container">
             <form id="authForm">
                 <h2 id="formTitle">ยืนยันตัวตน</h2>
-                <div>
-                    <img id="pictureUrl">
-                    <p id="userId"><b>userId:</b> </p>
-                    <p id="displayName"><b>displayName:</b> </p>
-                    <p id="statusMessage"><b>statusMessage:</b> </p>
-                  </div>
+           
                 <div id="nameField" class="optional-field">
                     <input type="text" placeholder="Full Name" />
                 </div>
@@ -322,12 +317,11 @@
 
         async function getUserProfile() {
             const profile = await liff.getProfile()
-            document.getElementById("pictureUrl").src = profile.pictureUrl
-            document.getElementById("userId").append(profile.userId)
+            // document.getElementById("pictureUrl").src = profile.pictureUrl
+            // document.getElementById("userId").append(profile.userId)
+            // document.getElementById("statusMessage").append(profile.statusMessage)
+            // document.getElementById("displayName").append(profile.displayName)
             user_id = profile.userId;
-         
-            document.getElementById("statusMessage").append(profile.statusMessage)
-            document.getElementById("displayName").append(profile.displayName)
         }
         async function main() {
             await liff.init({ liffId: "2008393372-0rqmNovj" })
