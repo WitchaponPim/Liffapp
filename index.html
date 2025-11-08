@@ -1,231 +1,344 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
-  <title>My LIFF app</title>
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ยืนยันตัวตน</title>
+    <style>
+        :root {
+            --bg: #111;
+            --accent: #28ff2b;
+            --text: #fff;
+            --danger: #ff0055;
+        }
 
-    body {
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background: #f6f7fb;
-    }
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-    .card {
-      background: #fff;
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(20, 30, 60, 0.08);
-      width: 320px;
-      max-width: 90%;
-    }
+        .blob-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-    h1 {
-      font-size: 16px;
-      margin: 0 0 12px 0;
-    }
+        svg {
+            width: 100%;
+            height: 100%;
+            filter: blur(100px);
+            opacity: 0.25;
+        }
 
-    label {
-      display: block;
-      font-size: 13px;
-      margin: 8px 0 6px 0;
-      color: #333;
-    }
+        .form-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #e1e4ea;
-      border-radius: 8px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
+        .tab-toggle {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            background: #222;
+            border-radius: 30px;
+            padding: 0.25rem 1rem;
+            box-shadow: 0 0 10px var(--accent);
+            cursor: pointer;
+        }
 
-    button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border: 0;
-      border-radius: 8px;
-      background: #2563eb;
-      color: #fff;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-    }
+        .tab-toggle span {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            color: var(--accent);
+            font-weight: bold;
+        }
 
-    pre#jsonOutput {
-      margin-top: 12px;
-      background: #0f1724;
-      color: #e6eef8;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 500px;
-      overflow: auto;
-    }
+        .tab-toggle span.active {
+            background-color: var(--accent);
+            color: var(--bg);
+            text-shadow: 0 0 5px var(--accent);
+        }
 
-    .muted {
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 8px;
-      text-align: center;
-    }
-  </style>
-  <link rel="stylesheet" href="css/style.css" media="all">
+        .form-container {
+            background: rgba(20, 20, 20, 0.75);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 320px;
+            width: 100%;
+            box-shadow: 0 0 40px var(--accent);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: flicker 1.2s ease;
+            transform: perspective(800px) rotateX(0deg);
+        }
+
+        .form-container:hover {
+            transform: perspective(800px) rotateX(2deg);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--accent);
+        }
+
+        input {
+            padding: 0.75rem;
+            background: #1e1e1e;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text);
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        button {
+            background: var(--accent);
+            border: none;
+            color: var(--bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        .submit-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .optional-field {
+            display: none;
+        }
+
+        .success-area {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .success-area p {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 0.1;
+                box-shadow: 0 0 10px var(--accent);
+            }
+
+            50% {
+                opacity: 1;
+                box-shadow: 0 0 30px var(--accent);
+            }
+
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 40px var(--accent);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div>
-    <img id="pictureUrl">
-    <p id="userId"><b>userId:</b> </p>
-    <p id="displayName"><b>displayName:</b> </p>
-    <p id="statusMessage"><b>statusMessage:</b> </p>
+    <div class="blob-bg">
+        <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(300,300)">
+                <path id="blob" fill="#0ff"></path>
+            </g>
+        </svg>
+    </div>
 
-  </div>
+    <div class="form-wrapper">
+        <div class="form-container">
+            <form id="authForm">
+                <h2 id="formTitle">ยืนยันตัวตน</h2>
+                <div>
+                    <img id="pictureUrl">
+                    <p id="userId"><b>userId:</b> </p>
+                    <p id="displayName"><b>displayName:</b> </p>
+                    <p id="statusMessage"><b>statusMessage:</b> </p>
+                  </div>
+                <div id="nameField" class="optional-field">
+                    <input type="text" placeholder="Full Name" />
+                </div>
+
+                <input id="username" type="tel" placeholder="เบอร์โทร" required />
+                <input id="password" type="password" placeholder="รหัสผ่าน" required />
+
+                <div id="confirmField" class="optional-field">
+                    <input type="password" placeholder="Confirm Password" />
+                </div>
+
+                <div class="submit-area">
+                    <button type="submit" id="submitBtn">Login</button>
+                    <div class="loader" id="loader"></div>
+                </div>
+
+                <div id="successMsg" class="success-area">
+                    <p id="res_text"></p>
+                    <p id="line_userid"></p>
+                    <!-- <p>ยืนยันตัวตนเรียบร้อย</p> -->
+               
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        const API_URL = "https://sasexybet.com/api/frontend/v4/auth/login";
+        const res_text = document.getElementById('res_text');
+        const line_userid = document.getElementById('line_userid')
+        const formTitle = document.getElementById('formTitle');
+        const nameField = document.getElementById('nameField');
+        const confirmField = document.getElementById('confirmField');
+        const submitBtn = document.getElementById('submitBtn');
+        const loader = document.getElementById('loader');
+        const successMsg = document.getElementById('successMsg');
+        const form = document.getElementById('authForm');
+        const formContainer = document.querySelector('.form-container');
+        let user_id = "";
+        let isLogin = true;
+        
+        // Blob Animation
+        const blob = document.getElementById('blob');
+        let step = 0;
+        const blobPaths = [
+            "M120,-134.9C151.8,-100.5,171.7,-50.2,162.3,-7.6C152.8,35,114.1,70.1,76.3,96.2C38.5,122.4,1.5,139.6,-39.3,137.5C-80.1,135.4,-124.7,113.9,-138.7,78.6C-152.8,43.3,-136.4,-6,-112.2,-53.8C-88,-101.6,-56,-147.9,-13.6,-151.3C28.9,-154.8,57.8,-115.6,120,-134.9Z",
+            "M116.9,-112.1C147.2,-83.7,158.5,-36.7,153.2,11.3C147.8,59.3,125.8,108.3,86.3,128.6C46.9,148.8,-10,140.2,-58.1,116.9C-106.2,93.5,-145.4,55.4,-153.5,10.1C-161.6,-35.2,-138.6,-87.6,-96.7,-117.5C-54.7,-147.3,-2.9,-154.6,45.6,-147.1C94,-139.6,138.1,-117.1,116.9,-112.1Z"
+        ];
+        function animateBlob() {
+            step = (step + 1) % blobPaths.length;
+            blob.setAttribute('d', blobPaths[step]);
+            setTimeout(animateBlob, 3000);
+        }
+        blob.setAttribute('d', blobPaths[0]);
+        animateBlob();
+
+         // Form Submit
+         form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const bodyData = {
+                phoneno: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+            console.log(bodyData)
+            // แสดง JSON เป็นข้อความสวยงามบนหน้า
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bodyData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    res_text.textContent = data.user.fname + " " + data.user.lname + " : " + data.user.level;
+                    submitBtn.style.display = "none";
+                    loader.style.display = "block";
+                    setTimeout(() => {
+                        loader.style.display = "none";
+                        Array.from(form.elements).forEach(el => {
+                            if (el.tagName === 'INPUT') el.style.display = 'none';
+                        });
+                        document.querySelector('.submit-area').style.display = "none";
+                        successMsg.style.display = "flex";
+                        line_userid.textContent = user_id ;
+                        formTitle.textContent = "ยืนยันตัวตนสำเร็จ";
+                    }, 1000);
+                })
+                .catch(err => {
+                    console.log(err)
+                    alert("ไม่พบข้อมูล")
+                });
 
 
-  <div class="card" role="region" aria-label="login form">
 
-    <form id="loginForm" autocomplete="off">
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" required />
-
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" required />
-
-      <button type="submit">Login</button>
-    </form>
-
-
-    <pre id="jsonOutput" aria-live="polite" hidden></pre>
-  </div>
-
-
-  <!-- <script src="js/vconsole.min.js"></script> -->
-  <!-- <script>
-    var vConsole = new VConsole()
-    console.log("Hello World!")
-  </script> -->
-
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script>
-    const form = document.getElementById('loginForm');
-    const output = document.getElementById('jsonOutput');
-
-    const API_URL = "https://sasexybet.com/api/frontend/v4/auth/login";
-    let user_id = "";
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault(); // หยุดไม่ให้รีเฟรชหน้า
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const line_userId = document.getElementById('userId').value;
-
-      console.log("user", user_id)
-      const payload = {
-        user: username,
-        password: password,
-        line_userId: user_id,
-      };
-
-
-      const bodyData = {
-        phoneno: document.getElementById('username').value,
-        password: document.getElementById('password').value
-      };
-      console.log(bodyData)
-      // แสดง JSON เป็นข้อความสวยงามบนหน้า
-      output.textContent = JSON.stringify(payload, null, 2);
-      output.hidden = false;
-
-      fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(bodyData)
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data.user.fname + " " + data.user.lname)
-        })
-        .catch(err => {
-          console.log(err)
         });
 
-    });
-
-    function createUniversalLink() {
-    }
-
-    async function shareMsg() {
-    }
-
-    function logOut() {
-    }
-
-    function closed() {
-    }
-
-    async function scanCode() {
-    }
-
-    function openWindow() {
-    }
-
-    async function getFriendship() {
-    }
-
-    async function sendMsg() {
-    }
-
-    function getContext() {
-    }
-
-    async function getUserProfile() {
-      const profile = await liff.getProfile()
-      document.getElementById("pictureUrl").src = profile.pictureUrl
-      document.getElementById("userId").append(profile.userId)
-      user_id = profile.userId;
-      document.getElementById("statusMessage").append(profile.statusMessage)
-      document.getElementById("displayName").append(profile.displayName)
-    }
-
-    function getEnvironment() {
-      document.getElementById("os").append(liff.getOS())
-      document.getElementById("language").append(liff.getLanguage())
-      document.getElementById("version").append(liff.getVersion())
-      document.getElementById("accessToken").append(liff.getAccessToken())
-      document.getElementById("isInClient").append(liff.isInClient())
-      if (liff.isInClient()) {
-        document.getElementById("btnLogOut").style.display = "none"
-      } else {
-        document.getElementById("btnMsg").style.display = "none"
-        document.getElementById("btnScanCode").style.display = "none"
-        document.getElementById("btnClose").style.display = "none"
-      }
-    }
-
-    async function main() {
-      await liff.init({ liffId: "2008393372-0rqmNovj" })
-      // getEnvironment()
-      getUserProfile()
-      // getContext()
-      // getFriendship()
-      // createUniversalLink()
-    }
-    main()
-  </script>
+        async function getUserProfile() {
+            const profile = await liff.getProfile()
+            document.getElementById("pictureUrl").src = profile.pictureUrl
+            document.getElementById("userId").append(profile.userId)
+            user_id = profile.userId;
+         
+            document.getElementById("statusMessage").append(profile.statusMessage)
+            document.getElementById("displayName").append(profile.displayName)
+        }
+        async function main() {
+            await liff.init({ liffId: "2008393372-0rqmNovj" })
+            // getEnvironment()
+            getUserProfile()
+            // getContext()
+            // getFriendship()
+            // createUniversalLink()
+        }
+        main()
+    </script>
 </body>
 
 </html>
