@@ -280,7 +280,8 @@
 
             const bodyData = {
                 phoneno: document.getElementById('username').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                lineUserId : user_id
             };
             console.log(bodyData)
             // แสดง JSON เป็นข้อความสวยงามบนหน้า
@@ -320,6 +321,7 @@
         });
 
         async function getUserProfile() {
+            loader.style.display = "block";
             const profile = await liff.getProfile()
             // document.getElementById("pictureUrl").src = profile.pictureUrl
             document.getElementById("userId").append(profile.userId)
@@ -332,6 +334,7 @@
                 lineUserId: user_id
             };
             console.log(bodyData)
+            
             fetch(API_CHECKER, {
                 method: "POST",
                 headers: {
@@ -342,18 +345,24 @@
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);
-                    // setTimeout(() => {
-                    //     loader.style.display = "none";
-                    //     Array.from(form.elements).forEach(el => {
-                    //         if (el.tagName === 'INPUT') el.style.display = 'none';
-                    //     });
-                    //     document.querySelector('.submit-area').style.display = "none";
-                    //     successMsg.style.display = "flex";
-                    //     line_userid.textContent = user_id ;
-                    //     formTitle.textContent = "ยืนยันตัวตนสำเร็จ";
-                    // }, 1000);
+                    if(data.code == 0){
+                        res_text.textContent = data.description.fname + " " + data.description.lname + " : " + data.description.level;
+                        submitBtn.style.display = "none";
+                        setTimeout(() => {
+                        loader.style.display = "none";
+                        Array.from(form.elements).forEach(el => {
+                            if (el.tagName === 'INPUT') el.style.display = 'none';
+                        });
+                        document.querySelector('.submit-area').style.display = "none";
+                        successMsg.style.display = "flex";
+                        line_userid.textContent = user_id ;
+                        formTitle.textContent = "ยืนยันตัวตนสำเร็จ";
+                    }, 500);
+                    }
+                   
                 })
                 .catch(err => {
+                    loader.style.display = "none";
                     console.log(err)
                    
                 });
