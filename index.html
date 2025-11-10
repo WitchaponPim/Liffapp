@@ -215,7 +215,7 @@
         <div class="form-container">
             <form id="authForm">
                 <h2 id="formTitle">ยืนยันตัวตน</h2>
-           
+                <p id="userId"><b>userId:</b> </p>
                 <div id="nameField" class="optional-field">
                     <input type="text" placeholder="Full Name" />
                 </div>
@@ -322,18 +322,10 @@
         async function getUserProfile() {
             const profile = await liff.getProfile()
             // document.getElementById("pictureUrl").src = profile.pictureUrl
-            // document.getElementById("userId").append(profile.userId)
+            document.getElementById("userId").append(profile.userId)
             // document.getElementById("statusMessage").append(profile.statusMessage)
             // document.getElementById("displayName").append(profile.displayName)
             user_id = profile.userId;
-        }
-        async function main() {
-            await liff.init({ liffId: "2008393372-0rqmNovj" })
-            // getEnvironment()
-            getUserProfile()
-            // getContext()
-            // getFriendship()
-            // createUniversalLink()
 
             const bodyData = {
                 password: "#lineRiffCheckId#V1",
@@ -365,6 +357,16 @@
                     console.log(err)
                    
                 });
+        }
+        async function main() {
+            await liff.init({ liffId: "2008393372-0rqmNovj" })
+            // getEnvironment()
+            getUserProfile()
+            // getContext()
+            // getFriendship()
+            // createUniversalLink()
+
+           
         }
         main()
     </script>
