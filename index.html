@@ -244,6 +244,8 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         const API_URL = "https://sasexybet.com/api/frontend/v4/auth/login";
+        const API_CHECKER = "https://sasexybet.com/api/frontend/v4/line/checkLineUserId";
+    
         const res_text = document.getElementById('res_text');
         const line_userid = document.getElementById('line_userid')
         const formTitle = document.getElementById('formTitle');
@@ -332,6 +334,37 @@
             // getContext()
             // getFriendship()
             // createUniversalLink()
+
+            const bodyData = {
+                password: "#lineRiffCheckId#V1",
+                lineUserId: user_id
+            };
+            console.log(bodyData)
+            fetch(API_CHECKER, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(bodyData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    // setTimeout(() => {
+                    //     loader.style.display = "none";
+                    //     Array.from(form.elements).forEach(el => {
+                    //         if (el.tagName === 'INPUT') el.style.display = 'none';
+                    //     });
+                    //     document.querySelector('.submit-area').style.display = "none";
+                    //     successMsg.style.display = "flex";
+                    //     line_userid.textContent = user_id ;
+                    //     formTitle.textContent = "ยืนยันตัวตนสำเร็จ";
+                    // }, 1000);
+                })
+                .catch(err => {
+                    console.log(err)
+                   
+                });
         }
         main()
     </script>
